@@ -5,3 +5,5 @@
 2. Set PGDATABASE = nc_news inside .env.development file
 3. Set PGDATABASE = nc_news_test inside .env.test file
 
+----------------
+4. Completed task 2 - GET api-topics
