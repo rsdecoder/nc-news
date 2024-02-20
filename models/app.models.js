@@ -1,10 +1,15 @@
-const db = require("../db/connection")
+const fs = require("fs/promises")
 
-function selectAllTopics () {
-    return db.query("SELECT * FROM topics")
-    .then((result) => {
-        return result.rows;
-    })
-}
 
-module.exports = selectAllTopics;
+// function selectAllApis () {
+//     return fs.readFile('./endpoints.json')
+//     .then((fileContents) => {
+//         const parsedFileContents = JSON.parse(fileContents)
+//         return parsedFileContents;
+//     })
+// }
+
+
+
+
+module.exports = { selectAllApis };

@@ -1,19 +1,14 @@
 const express = require("express");
 const app = express()
-const { getHealthCheck, getAllTopics } = require("./controllers/app.controllers")
-
+const { getHealthCheck, getAllApis } = require("./controllers/app.controllers")
+const { getAllTopics }  = require("./controllers/topics.controllers.js")
 
 
 app.get("/api/healthcheck", getHealthCheck)
 
 app.get("/api/topics", getAllTopics)
 
+app.get("/api", getAllApis)
 
-app.use((err, request, response, next) => {
-    console.log('err in error handling middleware', err)
-
-    response.status(500).send({msg: 'Internal server error'})
-    next(err)
-})
 
 module.exports = app;
