@@ -1,10 +1,14 @@
-const express = require("express");
-const app = express();
 
-app.use((err, request, response, next) => {
-    console.log('err in error handling middleware', err)
-    if(err) {
-        response.status(500).send({msg: 'Internal server error'})
+exports.handleCustomErrors = (err, request, response, next) => {
+    if(err.status && err.msg) {
+        response.status(err.status).send({msg: err.msg})
     }
     next(err)
-})
+}
+
+exports.handlePSQLErrors = (err, request, response, next) => {
+    if(err.code = "22P02") {
+        response.status(400).send({msg: 'Bad Request'})
+    }
+    next(err)
+}
