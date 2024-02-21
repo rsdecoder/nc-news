@@ -33,7 +33,7 @@ describe("GET", () => {
           });
         });
       });
-    test("STATUS - 404 respond with a message bad request when people request with an invalid endpoint", () => {
+    test("STATUS - 404", () => {
       return request(app).get("/api/topicafjajfh").expect(404);
     });
   });
@@ -82,4 +82,32 @@ describe("GET", () => {
         });
     });
   });
+  describe('/api/articles', () => {
+    test('STATUS 200, should return an array of article objects', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+          const {articles} = response.body;
+          expect(typeof articles).toBe('object')
+          expect(articles[0]['created_at']).toBe('2020-11-03T09:12:00.000Z')
+          expect(articles[0]).toHaveProperty('article_id');
+          expect(articles[0]).toHaveProperty('title')
+          expect(articles[0]).toHaveProperty('author');
+          expect(articles[0]).toHaveProperty('topic');
+          expect(articles[0]).toHaveProperty('created_at');
+          expect(articles[0]).toHaveProperty('votes');
+          expect(articles[0]).toHaveProperty('article_img_url');
+          expect(articles[0]).toHaveProperty('comment_count');
+          expect(articles[0]).not.toHaveProperty('body')
+        })
+    });
+    test('STATUS - 404, should respond with a 404',() => {
+      return request(app)
+      .get("/api/invalidEndpoint")
+      .expect(404)
+    })
+  });
 });
+
+
