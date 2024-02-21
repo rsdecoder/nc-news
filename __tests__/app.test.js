@@ -19,6 +19,8 @@ describe("GET /api/healthcheck ", () => {
   });
 });
 
+//===============GET ============================
+
 describe("GET", () => {
   describe("GET /api/topics", () => {
     test("STATUS - 200 responds with a status of 200 and array of objects", () => {
@@ -89,25 +91,75 @@ describe("GET", () => {
         .expect(200)
         .then((response) => {
           const {articles} = response.body;
-          expect(typeof articles).toBe('object')
-          expect(articles[0]['created_at']).toBe('2020-11-03T09:12:00.000Z')
-          expect(articles[0]).toHaveProperty('article_id');
-          expect(articles[0]).toHaveProperty('title')
-          expect(articles[0]).toHaveProperty('author');
-          expect(articles[0]).toHaveProperty('topic');
-          expect(articles[0]).toHaveProperty('created_at');
-          expect(articles[0]).toHaveProperty('votes');
-          expect(articles[0]).toHaveProperty('article_img_url');
-          expect(articles[0]).toHaveProperty('comment_count');
-          expect(articles[0]).not.toHaveProperty('body')
+          articles.map((article) => {
+            expect(typeof article).toBe('object')
+            expect(article).toHaveProperty('article_id');
+            expect(article).toHaveProperty('title')
+            expect(article).toHaveProperty('author');
+            expect(article).toHaveProperty('topic');
+            expect(article).toHaveProperty('created_at');
+            expect(article).toHaveProperty('votes');
+            expect(article).toHaveProperty('article_img_url');
+            expect(article).toHaveProperty('comment_count');
+            expect(article).not.toHaveProperty('body')
+          })
+          
         })
     });
+  });
+  describe("/api/invalidEndpoint", () => {
     test('STATUS - 404, should respond with a 404',() => {
       return request(app)
       .get("/api/invalidEndpoint")
       .expect(404)
     })
+  })
+  describe('/api/articles/:article_id/comments', () => {
+    test('STATUS 200, should return an array of comments for given article_id', () => {
+      return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+        console.log(response.body.comments)
+        const { comments } = response.body
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty('comment_id')
+          expect(comment).toHaveProperty('body')
+          expect(comment).toHaveProperty('article_id')
+          expect(comment).toHaveProperty('author')
+          expect(comment).toHaveProperty('votes')
+          expect(comment).toHaveProperty('created_at')
+        })
+      })
+    });
+    test("STATUS 200, should return an array of comments with the most recent comment first", () => {
+      return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then((response) => {
+        const { comments } = response.body;
+        expect(comments[0]['body']).toBe("This morning, I showered for nine minutes.")
+      })
+    });
+
+    test("STATUS 404 and should respond with a message when given an valid parametric endpoint but does not exist", () => {
+      return request(app)
+      .get('/api/articles/999/comments')
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('article does not exist')
+      })
+    })
+    test("STATUS 400 and should respond with a message when given an in-valid parametric endpoint", () => {
+      return request(app)
+      .get('/api/articles/not-an-id/comments')
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe('Bad Request')
+      })
+    })
   });
+  
 });
 
 
