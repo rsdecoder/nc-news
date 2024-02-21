@@ -14,7 +14,7 @@ exports.selectArticlesById = (article_id) => {
 exports.selectAllArticles = () => {
     
     const sqlString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url,
-    COUNT(comments.article_id) AS comment_count  
+    CAST(COUNT(comments.article_id) AS INTEGER ) AS comment_count  
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id
     GROUP BY articles.article_id
