@@ -9,7 +9,20 @@ exports.selectCommentsById = (article_id) => {
         if(result.rows.length === 0){
             return Promise.reject({status: 404, msg: 'article does not exist'})
         }
-        console.log(result.rows)
         return result.rows;
+    })
+}
+
+
+exports.insertNewComment = (article_id, username, body ) => {
+
+    if(!article_id || !username || !body){
+        return Promise.reject({status: 400, msg: 'Bad Request'})
+    }
+    
+    return db.query(`INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`, [username, body, article_id])
+    .then((result) => {
+        console.log(result.rows, "<<<result")
+        return result.rows
     })
 }
