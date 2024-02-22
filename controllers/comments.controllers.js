@@ -21,8 +21,7 @@ exports.postComment = (request, response, next) => {
     insertNewComment(article_id, username, body).then((Newcomment)=> {
         response.status(201).send({Newcomment});
     })
-    .catch((err) => {
-        console.log(err, "<<<err in the controller")      
+    .catch((err) => {      
         next(err)
     })
 }
