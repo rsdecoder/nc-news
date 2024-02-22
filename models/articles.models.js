@@ -32,6 +32,9 @@ exports.updateArticleById = (article_id, inc_votes ) => {
    SET votes =  votes + $1
    WHERE article_id = $2
    RETURNING *;`
+   if(!inc_votes){
+    return Promise.reject({status: 400, msg: 'Bad Request'})
+  }
   return db
   .query(sqlString, [inc_votes, article_id])
   .then((result) => {
