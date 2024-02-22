@@ -1,4 +1,4 @@
-const { selectArticlesById , selectAllArticles} = require("../models/articles.models")
+const { selectArticlesById , selectAllArticles, updateArticleById} = require("../models/articles.models")
 
 exports.getArticlesById = (request, response, next) => {
     const { article_id } = request.params;
@@ -16,3 +16,16 @@ exports.getAllArticles = (request, response, next) => {
     })
 }
 
+
+
+exports.patchArticleById = (request, response, next) => {
+    const { article_id } = request.params;
+    const {inc_votes}  = request.body;
+    updateArticleById(article_id, inc_votes).then((updatedArticle) => {
+        response.status(200).send({updatedArticle})
+    })
+    .catch((err) => {
+        next(err)
+    })
+    
+}

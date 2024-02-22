@@ -25,3 +25,19 @@ exports.selectAllArticles = () => {
       return result.rows;
     });
 };
+
+
+exports.updateArticleById = (article_id, inc_votes ) => {
+  const sqlString = `UPDATE articles
+   SET votes =  votes + $1
+   WHERE article_id = $2
+   RETURNING *;`
+  return db
+  .query(sqlString, [inc_votes, article_id])
+  .then((result) => {
+    if(result.rows.length === 0){
+      return Promise.reject({status: 404, msg: 'article does not exist to update'})
+    }
+    return result.rows;
+  })
+}

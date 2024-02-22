@@ -18,8 +18,8 @@ exports.postComment = (request, response, next) => {
     const {username, body} = request.body;
     const {article_id} = request.params;
 
-    insertNewComment(article_id, username, body).then((Newcomment)=> {
-        response.status(201).send({Newcomment});
+    insertNewComment(article_id, username, body).then((newcomment)=> {
+        response.status(201).send({newcomment});
     })
     .catch((err) => {      
         next(err)
