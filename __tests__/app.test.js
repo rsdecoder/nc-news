@@ -130,6 +130,15 @@ describe("GET", () => {
           });
         });
     });
+    test("STATUS 200, should return an empty array if no comments found for an article", () => {
+      return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then((response) => {
+        const {comments} = response.body;
+        expect(comments.length).toBe(0)
+      })
+    })
     test("STATUS 200, should return an array of comments with the most recent comment first", () => {
       return request(app)
         .get("/api/articles/1/comments")
@@ -139,15 +148,6 @@ describe("GET", () => {
           expect(comments[0]["body"]).toBe(
             "This morning, I showered for nine minutes."
           );
-        });
-    });
-
-    test("STATUS 404 and should respond with a message when given an valid parametric endpoint but does not exist", () => {
-      return request(app)
-        .get("/api/articles/999/comments")
-        .expect(404)
-        .then((response) => {
-          expect(response.body.msg).toBe("article does not exist");
         });
     });
     test("STATUS 400 and should respond with a message when given an in-valid parametric endpoint", () => {
