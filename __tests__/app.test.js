@@ -159,6 +159,23 @@ describe("GET", () => {
         });
     });
   });
+  describe('/api/users', () => {
+    test('STATUS 200, should respond with an array of objects', () => {
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then((response) => {
+          const { users } = response.body;
+          users.map((user) => {
+            expect(typeof user).toBe('object');
+            expect(user).toHaveProperty('username');
+            expect(user).toHaveProperty('name');
+            expect(user).toHaveProperty('avatar_url');
+          })
+        })
+    });
+
+  });
 });
 
 //========================POST =========================
@@ -277,25 +294,37 @@ describe('PATCH /api/articles/article_id', () => {
     })
 
   });
-  test('STATUS 404 should respond with an appropriate message when no content is sent with a patch request', () => {
+  test('STATUS 400 should respond with an appropriate message when no body is sent with a patch request', () => {
     return request(app)
     .patch("/api/articles/3")
     .send()
-    .expect(404)
+    .expect(400)
     .then((response)=> {
-    expect(response.body.msg).toBe("Not Found")
+    expect(response.body.msg).toBe("Bad Request")
     })
   });
-  test('STATUS 404 should respond with an appropriate message when no content is sent with a patch request', () => {
+  test('STATUS 400 should respond with an appropriate message when no content is sent with a patch request', () => {
     const votesToUpdate = {}
     return request(app)
     .patch("/api/articles/3")
     .send(votesToUpdate)
+    .expect(400)
+    .then((response)=> {
+      expect(response.body.msg).toBe("Bad Request")
+    })
+  });
+  test('STATUS 404 should respond with an appopriate message when given a valid endpoint but does not exist', () => {
+    const votesToUpdate = {
+      inc_votes: 20
+    }
+    return request(app)
+    .patch("/api/articles/999")
+    .send(votesToUpdate)
     .expect(404)
     .then((response)=> {
-      expect(response.body.msg).toBe("Not Found")
+      expect(response.body.msg).toBe("article does not exist to update")
     })
-  })
+  });
   test('STATUS 400 should respond with an appopriate message when given an invalid endpoint', () => {
     const votesToUpdate = {
       inc_votes: 20
