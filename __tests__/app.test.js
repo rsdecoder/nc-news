@@ -175,9 +175,9 @@ describe("POST", () => {
         .send(newComment)
         .expect(201)
         .then((response) => {
-          const { Newcomment } = response.body;
-          const timeCreated_at = Newcomment[0]["created_at"];
-          expect(Newcomment[0]).toEqual({
+          const { newcomment } = response.body;
+          const timeCreated_at = newcomment[0]["created_at"];
+          expect(newcomment[0]).toEqual({
             comment_id: 19,
             body: "Lobster pot",
             article_id: 3,
@@ -230,7 +230,7 @@ describe("POST", () => {
       });
     });
     describe("/api/articles/:article_id/comments - POST comment with invalid username", () => {
-      test("STATUS 400 and should respond with a appropriate message when username is invalid", () => {
+      test("STATUS 404 and should respond with a appropriate message when username is invalid", () => {
         const newComment = {
           username: "Ragini",
           body: "Lobster pot",
@@ -243,6 +243,69 @@ describe("POST", () => {
             expect(response.body.msg).toBe("Not Found");
           });
       });
+    })
+  });
+});
+
+//========================PATCH=======================
+
+describe('PATCH /api/articles/article_id', () => {
+  test('STATUS 200 should respond with the updated article object', () => {
+    const votesToUpdate = {
+      inc_votes : 10
+    }
+    return request(app)
+    .patch("/api/articles/5")
+    .send(votesToUpdate)
+    .expect(200)
+    .then((response) => {
+      const { updatedArticle } = response.body
+      expect(updatedArticle[0]['article_id']).toBe(5)
+      expect(updatedArticle[0]['votes']).toBe(10)
+      expect(updatedArticle).toEqual([
+        {
+          article_id: 5,
+          title: 'UNCOVERED: catspiracy to bring down democracy',
+          topic: 'cats',
+          author: 'rogersop',
+          body: 'Bastet walks amongst us, and the cats are taking arms!',
+          created_at: '2020-08-03T13:14:00.000Z',
+          votes: 10,
+          article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+        }
+      ])
+    })
+
+  });
+  test('STATUS 404 should respond with an appropriate message when no content is sent with a patch request', () => {
+    return request(app)
+    .patch("/api/articles/3")
+    .send()
+    .expect(404)
+    .then((response)=> {
+    expect(response.body.msg).toBe("Not Found")
+    })
+  });
+  test('STATUS 404 should respond with an appropriate message when no content is sent with a patch request', () => {
+    const votesToUpdate = {}
+    return request(app)
+    .patch("/api/articles/3")
+    .send(votesToUpdate)
+    .expect(404)
+    .then((response)=> {
+      expect(response.body.msg).toBe("Not Found")
+    })
+  })
+  test('STATUS 400 should respond with an appopriate message when given an invalid endpoint', () => {
+    const votesToUpdate = {
+      inc_votes: 20
+    }
+    return request(app)
+    .patch("/api/articles/not-an-id")
+    .send(votesToUpdate)
+    .expect(400)
+    .then((response)=> {
+      expect(response.body.msg).toBe("Bad Request")
     })
   });
 });
