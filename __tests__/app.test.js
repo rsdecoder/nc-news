@@ -309,3 +309,31 @@ describe('PATCH /api/articles/article_id', () => {
     })
   });
 });
+//===================== DELETE ==================
+describe('DELETE -/api/comments/:comment_id', () => {
+  test("STATUS 204 should respond back with no content", () => {
+    return request(app)
+    .delete("/api/comments/3")
+    .expect(204)
+    .then((response) => {
+      expect(response.res.statusMessage).toBe('No Content')
+    })
+  })
+  test("STATUS 404 should respond with an appropriate message if comment does not exist to delete", () => {
+    return request(app)
+    .delete("/api/comments/99999")
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("comment does not exist to be deleted")
+    })
+  })
+  test("STATUS 400 should respond with an appropriate message when given invalid article-id", () => {
+    return request(app)
+    .delete("/api/comments/not-an-id")
+    .expect(400)
+    .then((response) => {
+      expect(response.body.msg).toBe("Bad Request")
+    })
+  })
+ });
+ 
