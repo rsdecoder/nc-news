@@ -65,6 +65,7 @@ describe("GET", () => {
           expect(article[0]).toHaveProperty("created_at");
           expect(article[0]).toHaveProperty("votes");
           expect(article[0]).toHaveProperty("article_img_url");
+          expect(article[0]).toHaveProperty("comment_count")
         });
     });
     test("GET:404 sends an appropriate status and error message when given a valid but non-existent id", () => {
