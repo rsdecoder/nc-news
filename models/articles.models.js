@@ -11,8 +11,18 @@ exports.selectArticlesById = (article_id) => {
     });
 };
 
-exports.selectAllArticles = () => {
-    
+exports.selectAllArticles = (topic) => {
+  
+  if(topic) {
+    return db.query(`SELECT * FROM articles WHERE topic = $1`, [topic])
+    .then((result) => {
+      if(result.rows.length === 0){
+        return Promise.reject({status: 404, msg: 'article does not exist for matched query'})
+      }
+      return result.rows;
+    })
+  }
+  else {
     const sqlString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url,
     CAST(COUNT(comments.article_id) AS INTEGER ) AS comment_count  
     FROM articles
@@ -24,6 +34,7 @@ exports.selectAllArticles = () => {
     .then((result) => {
       return result.rows;
     });
+  }
 };
 
 

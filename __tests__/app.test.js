@@ -91,7 +91,8 @@ describe("GET", () => {
         .expect(200)
         .then((response) => {
           const { articles } = response.body;
-          articles.map((article) => {
+          expect(articles.length).toBe(13);
+          articles.forEach((article) => {
             expect(typeof article).toBe("object");
             expect(article).toHaveProperty("article_id");
             expect(article).toHaveProperty("title");
@@ -105,7 +106,42 @@ describe("GET", () => {
           });
         });
     });
+    test("STATUS 200, should return the articles filtered by the topic value specified in the query", () => {
+      return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles.length).not.toBe(0)
+        articles.forEach((article) => {
+          expect(typeof article).toBe('object');
+          expect(article['topic']).toBe("mitch");
+        })
+      })
+    })
+    test("STATUS 200, should return the articles if query is omitted", () => {
+      return request(app)
+      .get("/api/articles?topic")
+      .expect(200)
+      .then((response) => {
+        const { articles } = response.body;
+        expect(articles.length).not.toBe(0)
+        articles.forEach((article) => {
+          expect(typeof article).toBe('object');
+        })
+      })
+    })
+    test("STATUS 404, should return an appropriate messasge if article does not exist with the matched query", () => {
+      return request(app)
+      .get("/api/articles?topic=ragini")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('article does not exist for matched query');
+      })
+    })
+
   });
+
   describe("/api/invalidEndpoint", () => {
     test("STATUS - 404, should respond with a 404", () => {
       return request(app)
@@ -120,6 +156,7 @@ describe("GET", () => {
         .expect(200)
         .then((response) => {
           const { comments } = response.body;
+          expect(comments.length).not.toBe(0);
           comments.forEach((comment) => {
             expect(comment).toHaveProperty("comment_id");
             expect(comment).toHaveProperty("body");
@@ -166,7 +203,8 @@ describe("GET", () => {
         .expect(200)
         .then((response) => {
           const { users } = response.body;
-          users.map((user) => {
+          expect(users.length).not.toBe(0)
+          users.forEach((user) => {
             expect(typeof user).toBe('object');
             expect(user).toHaveProperty('username');
             expect(user).toHaveProperty('name');
@@ -176,6 +214,7 @@ describe("GET", () => {
     });
 
   });
+
 });
 
 //========================POST =========================

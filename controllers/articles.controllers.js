@@ -11,8 +11,13 @@ exports.getArticlesById = (request, response, next) => {
 }
 
 exports.getAllArticles = (request, response, next) => {
-    selectAllArticles().then((articles) => {
+    const { topic } = request.query;
+
+    selectAllArticles(topic).then((articles) => {
         response.status(200).send({articles});
+    })
+    .catch((err) => {
+        next(err)
     })
 }
 
