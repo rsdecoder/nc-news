@@ -136,7 +136,15 @@ describe("GET", () => {
       .get("/api/articles?topic=ragini")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe('article does not exist for matched query');
+        expect(response.body.msg).toBe('topic does not exist');
+      })
+    })
+    test("STATUS 404, should return an appropriate messasge if article does not exist with the matched query", () => {
+      return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe('topic does not exist');
       })
     })
 
