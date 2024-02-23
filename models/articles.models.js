@@ -12,25 +12,41 @@ exports.selectArticlesById = (article_id) => {
 };
 
 exports.selectAllArticles = (topic) => {
-  const queryVals = [];
-  let sqlString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url,
-  CAST(COUNT(comments.article_id) AS INTEGER ) AS comment_count  
-  FROM articles
-  LEFT JOIN comments ON comments.article_id = articles.article_id`;
 
-  if (topic) {
-    queryVals.push(topic);
-    sqlString += ` WHERE topic = $1`;
+  function queryArticles () {
+    const queryVals = [];
+      let sqlString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url,
+      CAST(COUNT(comments.article_id) AS INTEGER ) AS comment_count  
+      FROM articles
+      LEFT JOIN comments ON comments.article_id = articles.article_id`;
+    
+      if (topic) {
+        queryVals.push(topic);
+        sqlString += ` WHERE topic = $1`;
+      }
+    
+      return db.query(sqlString +` GROUP BY articles.article_id
+      ORDER BY created_at DESC;`, queryVals)
+      .then((result) => {
+        return result.rows;
+      });
   }
 
-  return db.query(sqlString +` GROUP BY articles.article_id
-  ORDER BY created_at DESC;`, queryVals)
+  if(!topic) {
+    return queryArticles()
+  }
+
+  const checkIfTopicExits = `SELECT * FROM topics WHERE slug = $1;`;
+
+  return db.query(checkIfTopicExits,[topic])
   .then((result) => {
     if(result.rows.length === 0){
       return Promise.reject({status: 404, msg: 'topic does not exist'})
     }
-    return result.rows;
-  });
+    else {
+      return queryArticles()
+    }
+  }) 
 };
 
 exports.updateArticleById = (article_id, inc_votes) => {

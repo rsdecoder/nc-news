@@ -119,18 +119,6 @@ describe("GET", () => {
         })
       })
     })
-    test("STATUS 200, should return the articles if query is omitted", () => {
-      return request(app)
-      .get("/api/articles?topic")
-      .expect(200)
-      .then((response) => {
-        const { articles } = response.body;
-        expect(articles.length).not.toBe(0)
-        articles.forEach((article) => {
-          expect(typeof article).toBe('object');
-        })
-      })
-    })
     test("STATUS 404, should return an appropriate messasge if article does not exist with the matched query", () => {
       return request(app)
       .get("/api/articles?topic=ragini")
@@ -139,12 +127,13 @@ describe("GET", () => {
         expect(response.body.msg).toBe('topic does not exist');
       })
     })
-    test("STATUS 404, should return an appropriate messasge if article does not exist with the matched query", () => {
+    test("STATUS 200, should return an empty array", () => {
       return request(app)
       .get("/api/articles?topic=paper")
-      .expect(404)
+      .expect(200)
       .then((response) => {
-        expect(response.body.msg).toBe('topic does not exist');
+        const {articles} = response.body
+        expect(articles.length).toBe(0);
       })
     })
 
