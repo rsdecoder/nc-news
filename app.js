@@ -6,6 +6,10 @@ const { getAllTopics }  = require("./controllers/topics.controllers.js");
 const { getArticlesById, getAllArticles, patchArticleById } = require("./controllers/articles.controllers.js");
 const { getCommentsByArticleId , postComment, deleteCommentById} = require("./controllers/comments.controllers.js")
 const { getAllUsers } = require("./controllers/users.controllers.js")
+const cors = require('cors')
+
+app.use(cors());
+
 app.use(express.json());
 
 app.get("/api/healthcheck", getHealthCheck)
