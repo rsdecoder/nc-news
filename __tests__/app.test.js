@@ -137,6 +137,24 @@ describe("GET", () => {
         expect(articles.length).toBe(0);
       })
     })
+    test("STATUS 200 should return an array sorted by", () => {
+      return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then((response) => {
+        const {articles} = response.body
+        expect(articles).toBeSortedBy('votes', {descending: true});
+      })
+    })
+    test("STATUS 200 should return an array sorted by and ordered by", () => {
+      return request(app)
+      .get("/api/articles?sort_by=votes&order=asc")
+      .expect(200)
+      .then((response) => {
+        const {articles} = response.body
+        expect(articles).toBeSortedBy('votes', {descending: false});
+      })
+    })
   });
 
   describe("/api/invalidEndpoint", () => {

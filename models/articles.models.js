@@ -20,7 +20,7 @@ exports.selectArticlesById = (article_id) => {
 };
 
 exports.selectAllArticles = (topic, sort_by = 'created_at', order = 'desc') => {
-
+  console.log(sort_by, "from model")
   function queryArticles () {
     const queryVals = [];
       let sqlString = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url,
@@ -39,9 +39,11 @@ exports.selectAllArticles = (topic, sort_by = 'created_at', order = 'desc') => {
        if(!['asc', 'desc'].includes(order)) {
         return Promise.reject({ status: 400, msg: 'Invalid order query' }); 
        }
-    
-      return db.query(sqlString +` GROUP BY articles.article_id
-      ORDER BY ${sort_by} ${order};`, queryVals)
+       sqlString+= ` GROUP BY articles.article_id
+       ORDER BY ${sort_by} ${order};`
+
+       console.log(sqlString, "<<<sql")
+      return db.query(sqlString, queryVals)
       .then((result) => {
         return result.rows;
       });
