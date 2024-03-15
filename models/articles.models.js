@@ -19,7 +19,7 @@ exports.selectArticlesById = (article_id) => {
     });
 };
 
-exports.selectAllArticles = (topic) => {
+exports.selectAllArticles = (topic, sort_by = 'created_at', order = 'desc') => {
 
   function queryArticles () {
     const queryVals = [];
@@ -27,14 +27,21 @@ exports.selectAllArticles = (topic) => {
       CAST(COUNT(comments.article_id) AS INTEGER ) AS comment_count  
       FROM articles
       LEFT JOIN comments ON comments.article_id = articles.article_id`;
-    
+
       if (topic) {
         queryVals.push(topic);
         sqlString += ` WHERE topic = $1`;
       }
+       if(!['created_at', 'comment_count', 'votes'].includes(sort_by)){
+        return Promise.reject({ status: 400, msg: 'Invalid sort query' });
+       }
+
+       if(!['asc', 'desc'].includes(order)) {
+        return Promise.reject({ status: 400, msg: 'Invalid order query' }); 
+       }
     
       return db.query(sqlString +` GROUP BY articles.article_id
-      ORDER BY created_at DESC;`, queryVals)
+      ORDER BY ${sort_by} ${order};`, queryVals)
       .then((result) => {
         return result.rows;
       });
@@ -43,6 +50,7 @@ exports.selectAllArticles = (topic) => {
   if(!topic) {
     return queryArticles()
   }
+
 
   const checkIfTopicExits = `SELECT * FROM topics WHERE slug = $1;`;
 

@@ -18,7 +18,7 @@ exports.getAllArticles = (request, response, next) => {
     })
     .catch((err) => {
         next(err)
-    })
+    }) 
 }
 
 

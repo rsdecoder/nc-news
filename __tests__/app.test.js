@@ -137,7 +137,6 @@ describe("GET", () => {
         expect(articles.length).toBe(0);
       })
     })
-
   });
 
   describe("/api/invalidEndpoint", () => {
