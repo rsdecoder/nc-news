@@ -47,7 +47,7 @@
   },
   "GET /api/articles:article_id/comments": {
     "description": "serves an array of all comments by the specified article_id",
-    "queries": ["body", "author", "order", "article_id" ],
+    "queries": [],
     "exampleResponse": [
       [
         {
@@ -71,7 +71,7 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "serves an array of all comments by article_id",
-    "queries": ["author", "body", "article_id"],
+    "queries": [],
     "exampleResponse": {
         "newComment": [{
         "username": "rogersop",
