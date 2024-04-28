@@ -1,14 +1,39 @@
-# Northcoders News API
+# NC News API
 
-- Create two environment files called .env.test and .env.development
+This is a rest API built using postgreSQL which provides the data for the frontend NC News app.
 
-  1. Set PGDATABASE = nc_news inside .env.development file
-  2. Set PGDATABASE = nc_news_test inside .env.test file
+#### Tech Stack:
 
-- The minimum version of node required to run this project
-     Node.js v21.2.0.
+- PostgreSQL 
+- node.js
+- Express.js - framework
+- Jest - test framework
+- supertest
 
-- The minimum version of postgres required to run this project
-    psql (14.10 (Homebrew), server 16.1)
+#### How to set up the repo locally
+Create two environment files called <code>.env.test</code> and <code>.env.development</code>
+>1. Set <code>PGDATABASE = nc_news</code> inside .env.development file
+> 2. Set <code>PGDATABASE = nc_news_test</code> inside .env.test file
 
-- Link to the hosted version - https://nc-news-1-ukr6.onrender.com
+#### Install
+You would need to run the following command to install all the necessary packages to run the app suceessfully.
+
+><code>npm install</code>
+
+#### How to run the app locally
+First, set up the dbs
+><code>npm run setup-dbs</code>
+
+Then, start seeding the databse with the data by running this command
+><code>npm run seed</code>
+
+
+The minimum version of node required to run this project -
+  ><code>Node.js v21.2.0</code>
+
+The minimum version of postgres required to run this project
+  ><code>psql (14.10 (Homebrew), server 16.1)</code>
+
+* Link to the hosted version - https://nc-news-1-ukr6.onrender.com/api
+
+
