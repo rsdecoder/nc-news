@@ -9,11 +9,14 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
   throw new Error("PGDATABASE or a DATABASE_URL not set");
 }
 
-const config = {};
+const config = {
+  family: 4,  // Force IPv4 to avoid ENETUNREACH IPv6 errors
+};
 
 if (ENV === "production") {
   config.connectionString = process.env.DATABASE_URL;
   config.max = 2;
+  
 }
 
 
